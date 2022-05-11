@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js"></script>
+  </head>
+  <body>
+    <h1>VER LA CONSOLA</h1>
+    <!-- <img src="ttt_states.jpg" width="100%" /> -->
+    <script>
+      tf.ready().then(() => {
+        const modelPath = 'model/ttt_model.json'
+        tf.tidy(() => {
+          tf.loadLayersModel(modelPath).then((model) => {
+            //Tres estados del tablero
+            
+            //const emptyBoard = tf.zeros([9])
+            //const betterBlockMe = tf.tensor([-1, 0, 0, 1, 1, -1, 0, 0, -1])
+              //const goForTheKill = tf.tensor([1, 0, 1, 0, -1, -1, -1, 0, 1])
+
+            const jugada1 = tf.zeros([9]) // En esta jugada todos los campos estan vacios
+            const jugada2 = tf.tensor([-1, -1, -1, 1, 1, -1, 0, 0, -1])
+            // x = -1
+            // o = 1
+            // Vacio = 0 
+            // En esta jugada el jugador X gana en la primera fila.
+
+            const jugada3 = tf.tensor([0, 0, 1, 0, 0, 0, 0, 0, 0])
+            // x = 1
+            // o = -1
+            // Vacio = 0 
+            // En esta jugada solo hay una X en la fila 1 posicion 3
+
+            // Apilar estados en una forma [3, 9]
+            const matches = tf.stack([jugada1, jugada2, jugada3])
+            const result = model.predict(matches)
+            // Registrar los resultados
+            result.reshape([3, 3, 3]).print()
+
+            console.log(' En la primera jugada todos los campos estan vacios')
+            console.log(' En la segunda jugada el jugador X gana en la primera fila.')
+            console.log(' En la tercera jugada solo hay una X en la fila 1 posicion 3')
+
+            console.log("=================================");
+            console.log("[] Memoria usada: ", tf.memory().numBytes);
+            console.log("[] Cantidad de tensores: ", tf.memory().numTensors);
+            console.log("=================================");
+
+          })
+        })
+      })
+    </script>
+  </body>
+</html>
